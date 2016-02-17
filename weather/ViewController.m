@@ -32,15 +32,24 @@
                                    
                                    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
                                    
-                                   NSArray *dic1 = dic[@"HeWeather data service 3.0"];
-                                   NSDictionary *dic2 = dic1[0];
-                                   NSDictionary *dic3 = dic2[@"basic"];
-                                   NSLog(@"");
+                                   [self dictionaryParse:dic];
                                    
                                }
                            }];
     
     
+}
+
+-(void)dictionaryParse:(NSDictionary *)dic{
+    NSArray *dic1 = dic[@"HeWeather data service 3.0"];
+    NSDictionary *dic2 = dic1[0];
+    NSDictionary *hourForecastDic = dic2[@"hourly_forecast"];
+    NSDictionary *statusDic = dic2[@"status"];
+    NSDictionary *dailyForecastDic = dic2[@"daily_forecast"];
+    NSDictionary *nowForecastDic = dic2[@"now"];
+    NSDictionary *aqiDic = dic2[@"aqi"];
+    NSDictionary *basicDic = dic2[@"basic"];
+    NSDictionary *suggestionDic = dic2[@"suggestion"];
 }
 
 - (void)viewDidLoad {

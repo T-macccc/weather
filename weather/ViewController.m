@@ -28,8 +28,7 @@
                                if (error) {
                                    NSLog(@"Httperror: %@%ld", error.localizedDescription, error.code);
                                } else {
-                                   NSInteger responseCode = [(NSHTTPURLResponse *)response statusCode];
-                                   NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+//                                   NSInteger responseCode = [(NSHTTPURLResponse *)response statusCode];
                                    
                                    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
                                    

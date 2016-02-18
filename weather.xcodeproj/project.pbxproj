@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1867F83F1C761B50000B7793 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1867F83E1C761B50000B7793 /* CoreLocation.framework */; };
+		1867F8411C761B63000B7793 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1867F8401C761B63000B7793 /* MapKit.framework */; };
 		2F5AFECA1C7349D700ADF8FC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F5AFEC91C7349D700ADF8FC /* main.m */; };
 		2F5AFECD1C7349D700ADF8FC /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F5AFECC1C7349D700ADF8FC /* AppDelegate.m */; };
 		2F5AFED01C7349D700ADF8FC /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F5AFECF1C7349D700ADF8FC /* ViewController.m */; };
@@ -36,6 +38,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1867F83E1C761B50000B7793 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		1867F8401C761B63000B7793 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		2F5AFEC51C7349D700ADF8FC /* weather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = weather.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F5AFEC91C7349D700ADF8FC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		2F5AFECB1C7349D700ADF8FC /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -61,6 +65,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1867F8411C761B63000B7793 /* MapKit.framework in Frameworks */,
+				1867F83F1C761B50000B7793 /* CoreLocation.framework in Frameworks */,
 				2F5AFEFE1C734A7F00ADF8FC /* libAPIStoreSDK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -85,6 +91,8 @@
 		2F5AFEBC1C7349D700ADF8FC = {
 			isa = PBXGroup;
 			children = (
+				1867F8401C761B63000B7793 /* MapKit.framework */,
+				1867F83E1C761B50000B7793 /* CoreLocation.framework */,
 				2F5AFEFB1C734A7F00ADF8FC /* APIStoreSDK */,
 				2F5AFEC71C7349D700ADF8FC /* weather */,
 				2F5AFEE11C7349D700ADF8FC /* weatherTests */,

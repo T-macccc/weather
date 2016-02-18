@@ -10,11 +10,99 @@
 
 #import "APIStoreSDK.h"
 
-@interface ViewController ()
+#import <MapKit/MapKit.h>
+#import <CoreLocation/CoreLocation.h>
 
+@interface ViewController ()<CLLocationManagerDelegate>
+@property (nonatomic,retain)CLLocationManager *locationManager;
+@property (nonatomic,strong)CLGeocoder *geocoder;
+@property (nonatomic,strong)NSString *city;
 @end
 
 @implementation ViewController
+{
+    CLLocation *currentLocation;
+}
+
+- (void)pingyin:(NSMutableString *)string{
+    if (CFStringTransform((__bridge CFMutableStringRef)string, 0, kCFStringTransformMandarinLatin, NO)) {}
+    if (CFStringTransform((__bridge CFMutableStringRef)string, 0, kCFStringTransformStripDiacritics, NO)){}
+    
+    NSString *resultStr = [string stringByReplacingOccurrencesOfString:@" " withString:@""];
+    self.city = resultStr;
+}
+
+- (void)reverseGeocode:(CLLocation *)locations{
+    
+    if (currentLocation == nil) {
+        NSLog(@"location is nil;");
+    }
+    else{
+        NSLog(@"location is not nil" );
+    }
+    [self.geocoder reverseGeocodeLocation:locations completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+        if (error||placemarks.count == 0) {
+            NSLog(@"error:%@",error.description);
+        }
+        else{
+            for (CLPlacemark *placemark in placemarks) {
+                NSMutableString *str = [[NSMutableString alloc]initWithString:placemark.locality];
+                
+                [self pingyin:str];
+                NSLog(@"cityname:%@",str);
+                
+                [self sendAndGetWeather];
+            }
+        }
+    }];
+}
+
+- (CLGeocoder *)geocoder{
+    if (!_geocoder) {
+        self.geocoder = [CLGeocoder new];
+    }
+    return _geocoder;
+}
+
+- (CLLocationManager *)locationManager{
+    if (!_locationManager) {
+        _locationManager = [CLLocationManager new];
+        _locationManager.delegate = self;
+    }
+    return _locationManager;
+}
+
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error{
+    if (error.code == kCLErrorDenied) {
+        NSLog(@"failed error");
+    }
+}
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray<CLLocation *> *)locations{
+    currentLocation = [locations lastObject];
+    [manager stopUpdatingLocation];
+}
+
+- (void)locate{
+    if ([CLLocationManager locationServicesEnabled]) {
+        self.locationManager = [[CLLocationManager alloc]init];
+        self.locationManager.delegate = self;
+    }
+    else{
+        UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"recommand" message:@"failed" delegate:nil cancelButtonTitle:@"cancel" otherButtonTitles:@"ok", nil];
+        [alertView show];
+    }
+    [self.locationManager startUpdatingLocation];
+}
+
+- (void)clickButton{
+    CLLocation *location = [[CLLocation alloc]initWithLatitude:currentLocation.coordinate.latitude-7.2 longitude:(currentLocation.coordinate.longitude+242)];
+
+    NSLog(@"%f,%f",currentLocation.coordinate.latitude,currentLocation.coordinate.longitude);
+    [self reverseGeocode:location];
+
+}
+
 
 -(void)request: (NSString*)httpUrl withHttpArg: (NSString*)HttpArg  {
     NSString *urlStr = [[NSString alloc]initWithFormat: @"%@?%@", httpUrl, HttpArg];
@@ -55,10 +143,26 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSString *httpUrl = @"http://apis.baidu.com/heweather/weather/free";
-    NSString *httpArg = @"city=hangzhou";
-    [self request: httpUrl withHttpArg: httpArg];
+    [super viewDidLoad];
+    
+    [self locate];
+    [_locationManager requestAlwaysAuthorization];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.frame = CGRectMake(100, 100, 100, 50);
+    [button setTitle:@"click" forState:UIControlStateNormal];
+    [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    [self.view addSubview:button];
+    [button addTarget:self action:@selector(clickButton) forControlEvents:UIControlEventTouchUpInside];
+    
+    
     // Do any additional setup after loading the view, typically from a nib.
+}
+
+- ( void)sendAndGetWeather{
+    NSString *httpUrl = @"http://apis.baidu.com/heweather/weather/free";
+    NSString *httpArg = [NSString stringWithFormat:@"city=%@",self.city];
+    [self request: httpUrl withHttpArg: httpArg];
+    NSLog(@"successful");
 }
 
 - (void)didReceiveMemoryWarning {

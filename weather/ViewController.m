@@ -47,9 +47,8 @@
         else{
             for (CLPlacemark *placemark in placemarks) {
                 NSMutableString *str = [[NSMutableString alloc]initWithString:placemark.locality];
-                
-                [self pingyin:str];
-                NSLog(@"cityname:%@",str);
+                NSMutableString *city = [[NSMutableString alloc]initWithString:[str substringToIndex:(str.length-1)]];
+                [self pingyin:city];
                 
                 [self sendAndGetWeather];
             }
@@ -96,7 +95,7 @@
 }
 
 - (void)clickButton{
-    CLLocation *location = [[CLLocation alloc]initWithLatitude:currentLocation.coordinate.latitude-7.2 longitude:(currentLocation.coordinate.longitude+242)];
+    CLLocation *location = [[CLLocation alloc]initWithLatitude:currentLocation.coordinate.latitude longitude:(currentLocation.coordinate.longitude)];
 
     NSLog(@"%f,%f",currentLocation.coordinate.latitude,currentLocation.coordinate.longitude);
     [self reverseGeocode:location];
@@ -114,9 +113,8 @@
                                        queue: [NSOperationQueue mainQueue]
                            completionHandler: ^(NSURLResponse *response, NSData *data, NSError *error){
                                if (error) {
-                                   NSLog(@"Httperror: %@%ld", error.localizedDescription, error.code);
+                                   NSLog(@"Httperror: %@%ld", error.localizedDescription, (long)error.code);
                                } else {
-//                                   NSInteger responseCode = [(NSHTTPURLResponse *)response statusCode];
                                    
                                    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
                                    
@@ -131,13 +129,19 @@
 -(void)dictionaryParse:(NSDictionary *)dic{
     NSArray *dic1 = dic[@"HeWeather data service 3.0"];
     NSDictionary *dic2 = dic1[0];
-    NSDictionary *hourForecastDic = dic2[@"hourly_forecast"];
-    NSDictionary *statusDic = dic2[@"status"];
-    NSDictionary *dailyForecastDic = dic2[@"daily_forecast"];
+    NSArray *hourForecastDic = dic2[@"hourly_forecast"];
     NSDictionary *nowForecastDic = dic2[@"now"];
     NSDictionary *aqiDic = dic2[@"aqi"];
-    NSDictionary *basicDic = dic2[@"basic"];
-    NSDictionary *suggestionDic = dic2[@"suggestion"];
+    
+    NSDictionary *hourWeatherDictionary = hourForecastDic[0];
+    NSString *nowTem = hourWeatherDictionary[@"tmp"];//气温
+    
+    NSDictionary *aqiDictionary = aqiDic[@"city"];
+    NSString *aqiNumber = aqiDictionary[@"aqi"];//空气指数
+    NSString *aqiDes = aqiDictionary[@"qlty"];//空气描述
+    
+    NSDictionary *weather = nowForecastDic[@"cond"];
+    NSString *weatherDes = weather[@"txt"];//天气
 }
 
 - (void)viewDidLoad {
@@ -153,21 +157,13 @@
     [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.view addSubview:button];
     [button addTarget:self action:@selector(clickButton) forControlEvents:UIControlEventTouchUpInside];
-    
-    
-    // Do any additional setup after loading the view, typically from a nib.
 }
 
 - ( void)sendAndGetWeather{
     NSString *httpUrl = @"http://apis.baidu.com/heweather/weather/free";
     NSString *httpArg = [NSString stringWithFormat:@"city=%@",self.city];
     [self request: httpUrl withHttpArg: httpArg];
-    NSLog(@"successful");
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    NSLog(@"successful:%@",self.city);
 }
 
 @end
